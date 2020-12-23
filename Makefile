@@ -83,7 +83,7 @@ compile auto_patrn.c
 
 auto_qmail.c: \
 auto-str conf-qmail
-	./auto-str auto_qmail `head -n 1 conf-qmail` > auto_qmail.c
+	./auto-str auto_qmail `pwd`/tests > auto_qmail.c # XXX bad idea
 
 auto_qmail.o: \
 compile auto_qmail.c
