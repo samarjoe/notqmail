@@ -7,20 +7,20 @@ SHELL=/bin/sh
 
 default: it
 
-.PHONY: clean default it test inject-qualification
+.PHONY: clean default it test
 
 TESTBINS = unittest_stralloc unittest_blast unittest_prioq
 
 clean:
-	rm -f $(TESTBINS) *.o blast.c
-	rm -rf queue
+	rm -f $(TESTBINS) *.o blast.c inject-qualification-bug
 
 it: $(TESTBINS)
 
-test: it inject-qualification
+test: it integrationtest_inject
 	@for tbin in $(TESTBINS); do \
 		./$$tbin || exit 1 ; \
 	done
+	@./integrationtest_inject || exit 1
 
 unittest_stralloc: \
 ../load unittest_stralloc.o ../stralloc.a ../str.a ../error.a
@@ -64,19 +64,5 @@ unittest_prioq.o: \
 	../compile unittest_prioq.c -I.. \
 	`pkg-config --cflags check`
 
-queue: \
-../instqueue
-	@../instqueue
-
-# XXX this is an integration test, should run after unit tests
-# XXX it should exit nonzero on failure like unit tests presumably do
-inject-qualification: \
-queue ../qmail-queue ../qmail-inject
-	@find queue -type f | xargs rm
-	@echo "To: djb" | env QMAILQUEUE=../qmail-queue ../qmail-inject -a -- djb
-	@find queue/mess -type f | xargs egrep '^To: djb$$' >/dev/null \
-		&& echo "bug with inject-qualification -a" || true
-	@find queue -type f | xargs rm
-	@echo "To: djb" | env QMAILQUEUE=../qmail-queue ../qmail-inject -H --
-	@find queue/mess -type f | xargs egrep '^To: djb$$' >/dev/null \
-		&& echo "bug with inject-qualification -H" || true
+integrationtest_inject: \
+../qmail-inject ../qmail-qfilter

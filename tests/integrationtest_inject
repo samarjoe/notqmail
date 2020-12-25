@@ -1,0 +1,19 @@
+#!/bin/sh
+
+test_inject_qualification() {
+	rm -f inject-qualification-bug
+	echo "To: djb" \
+		| env QMAILQUEUE=./inject-qualification-queue ../qmail-inject $@ \
+			2>/dev/null || true
+	test -s inject-qualification-bug \
+		&& echo "bug with '$@'" || true
+}
+
+main() {
+	echo "Running integration: notqmail qmail-inject qualification"
+	test_inject_qualification "-a -- djb"
+	test_inject_qualification "-H --"
+}
+
+main "$@"
+exit $?

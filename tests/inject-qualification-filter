@@ -1,0 +1,4 @@
+#!/bin/sh
+
+grep '^To: djb$' >inject-qualification-bug
+exit 31
