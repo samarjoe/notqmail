@@ -1,3 +1,4 @@
+- 20201225 code: add Bruce Guenter's qmail-qfilter.
 - 20201120 code: add instqueue for packagers, extracted from instpackage.
 - 20200803 avoid sending CRCRLF in qmail-remote if input contains CRLF
 - 20200614 remove maildirwatch
